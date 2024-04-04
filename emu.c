@@ -312,8 +312,12 @@ int main(int argc, char **argv)
         numa_run_on_node(1);//改成绑定在node1上运行n
 
         // Fail allocation if requested node is full
+<<<<<<< HEAD
         //numa_set_strict(1);
         numa_set_strict(2);
+=======
+        numa_set_strict(1);
+>>>>>>> 0fc44c697d07123895f92ede6f15d606a3483d0e
 
         // Fill up local NUMA node to requested size
         if (rank == 0 && emu_local_size > 0) {
@@ -334,16 +338,25 @@ int main(int argc, char **argv)
 
                 // Fault and prevent swapping
                 PERR(mlock(emu_dummyptr, emu_dummysize) < 0, "emu: mlock, is the memlock rlimit too low?");
+<<<<<<< HEAD
                 //numa_node_size(1, &free1);
                 //printf("emu: availGB %.2f\n", free1/(float)GB);
             } else if (free1 < emu_local_size) {
                 fprintf(stderr, "error: only %lld bytes free on node 0\n", free1);
+=======
+            } else if (free1 < emu_local_size) {
+                fprintf(stderr, "error: only %lld bytes free on node 0\n", free0);
+>>>>>>> 0fc44c697d07123895f92ede6f15d606a3483d0e
                 return 1;
             }
         }
 
         if (rank == 0) {
+<<<<<<< HEAD
             numa_node_size(1, &free1);
+=======
+            numa_node_size(0, &free1);
+>>>>>>> 0fc44c697d07123895f92ede6f15d606a3483d0e
             printf("emu: availGB %.2f\n", free1/(float)GB);
         }
     }
@@ -390,9 +403,12 @@ int main(int argc, char **argv)
                 if (temp == NULL){
                     perror("numa get interleave mask is nothing!");
                     return -1;
+<<<<<<< HEAD
                 }else{
                     printf("numa interleave mask size: %d", &temp->size);
                     printf("numa interleave mask maskp: %d", &temp->maskp);
+=======
+>>>>>>> 0fc44c697d07123895f92ede6f15d606a3483d0e
                 }
             }
 
@@ -490,7 +506,10 @@ int main(int argc, char **argv)
                     break;
             } else if (info.ssi_signo == TIMER_SIGNAL) {
                 if (enable_emu) {
+<<<<<<< HEAD
                     printf("info.ssi_signo == TIMER_SIGNAL");
+=======
+>>>>>>> 0fc44c697d07123895f92ede6f15d606a3483d0e
                     emu_show_stats(pid);
                 }
 
@@ -522,10 +541,16 @@ int main(int argc, char **argv)
                     state_monitoring = true;
                     printf("emu: start %.2f\n", get_time());
 
+<<<<<<< HEAD
                     if (enable_emu){
                         printf("!state_monitoring && start_pattern && fnmatch(start_pattern,tmp,0)==0");
                         emu_show_stats(pid);
                     }
+=======
+                    if (enable_emu)
+                        emu_show_stats(pid);
+
+>>>>>>> 0fc44c697d07123895f92ede6f15d606a3483d0e
                     if (enable_memprof && rank == 0)
                         memprof_clear_refs(pid);
 
@@ -535,6 +560,7 @@ int main(int argc, char **argv)
                 } else if (state_monitoring && end_pattern &&
                         fnmatch(end_pattern, tmp, 0) == 0)
                 {
+<<<<<<< HEAD
                     if (enable_emu){
                         printf("state_monitoring && end_pattern && fnmatch(end_pattern, tmp, 0)==0");
                         emu_show_stats(pid);
@@ -546,6 +572,17 @@ int main(int argc, char **argv)
                         printf("enable_memprof && rank == 0 && !enable_timer");
                         memprof_show_stats(pid);
                     }
+=======
+                    if (enable_emu)
+                        emu_show_stats(pid);
+
+                    // If timer is enabled, then printing stats here would be
+                    // confusing since the last interval would be shorter
+                    // then all the others.
+                    if (enable_memprof && rank == 0 && !enable_timer)
+                        memprof_show_stats(pid);
+
+>>>>>>> 0fc44c697d07123895f92ede6f15d606a3483d0e
                     if (enable_timer) {
                         struct itimerspec zero = {};
                         PERR(timer_settime(timerid, 0, &zero, NULL) < 0, "emu: disarm timer");
